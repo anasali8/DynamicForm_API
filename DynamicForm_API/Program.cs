@@ -82,18 +82,15 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-
-<<<<<<< HEAD
-using (var scope = app.Services.CreateScope())
+if (app.Environment.IsDevelopment())
 {
+    using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }
 
-=======
 
 app.UseCors("AllowFrontend");
->>>>>>> 2edd9ed94c744f5f7a21136acb4ea8364da306db
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
