@@ -1,4 +1,4 @@
-name: Build and deploy ASP.Net Core app to Azure Web App - DynamicFormAPI
+name: Build and deploy ASP.Net Core app to Azure Web App - DynamicForm_API
 
 on:
   push:
@@ -56,6 +56,6 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'DynamicFormAPI'
+          app-name: 'DynamicForm_API'
           slot-name: 'Production'
           package: ./myapp
