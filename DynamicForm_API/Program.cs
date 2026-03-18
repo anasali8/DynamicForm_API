@@ -31,6 +31,8 @@ builder.Services.AddAutoMapper(
     cfg => cfg.AddProfile<MappingProfile>(),
     typeof(MappingProfile).Assembly);
 
+
+
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IFormRepository, FormRepository>();
 builder.Services.AddScoped<IFormVersionRepository, FormVersionRepository>();
@@ -70,6 +72,12 @@ builder.Services.AddScoped<IValidator<ReorderLookupItemsRequestDto>, ReorderLook
 builder.Services.AddScoped<IValidator<SubmitFormVersionRequestDto>, SubmitFormVersionRequestDtoValidator>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
