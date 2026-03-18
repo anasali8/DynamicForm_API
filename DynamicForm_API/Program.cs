@@ -1,4 +1,4 @@
-using DynamicForm_API.API.DTOs.Common;
+﻿using DynamicForm_API.API.DTOs.Common;
 using DynamicForm_API.API.DTOs.Fields;
 using DynamicForm_API.API.DTOs.Forms;
 using DynamicForm_API.API.DTOs.Lookups;
@@ -70,15 +70,30 @@ builder.Services.AddScoped<IValidator<ReorderLookupItemDto>, ReorderLookupItemDt
 builder.Services.AddScoped<IValidator<ReorderLookupItemsRequestDto>, ReorderLookupItemsRequestDtoValidator>();
 
 builder.Services.AddScoped<IValidator<SubmitFormVersionRequestDto>, SubmitFormVersionRequestDtoValidator>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.AllowAnyOrigin() 
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
 
 var app = builder.Build();
 
+<<<<<<< HEAD
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }
 
+=======
+
+app.UseCors("AllowFrontend");
+>>>>>>> 2edd9ed94c744f5f7a21136acb4ea8364da306db
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
