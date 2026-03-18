@@ -15,22 +15,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up .NET Core
+      - name: Set up .NET 9
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.x'
 
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
+      - name: Restore dependencies
+        run: dotnet restore
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
 
-      - name: Upload artifact for deployment job
+      - name: Publish (Self-contained)
+        run: dotnet publish -c Release -r win-x64 --self-contained true -o ./publish
+
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          name: app
+          path: ./publish
 
   deploy:
     runs-on: windows-latest
@@ -40,11 +43,11 @@ jobs:
       contents: read
 
     steps:
-      - name: Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: .net-app
-          path: ./myapp
+          name: app
+          path: ./publish
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -58,4 +61,4 @@ jobs:
         with:
           app-name: 'DynamicForm_API'
           slot-name: 'Production'
-          package: ./myapp
+          package: ./publish
